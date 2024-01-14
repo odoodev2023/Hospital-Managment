@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hospital_appointment_calender" model="ir.ui.view">
+        <field name="name">hospital.appointment.calender</field>
+        <field name="model">hospital.appointment</field>
+        <field name="arch" type="xml">
+            <calendar string="Appointment" date_start="booking_date" mode="month">
+                <field name="patient_id" filters="1" avatar_field="image"/>
+                <field name="state" filters="1" invisible="1"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_hospital_appointment_tree" model="ir.ui.view">
+        <field name="name">hospital.appointment.tree</field>
+        <field name="model">hospital.appointment</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state == 'done'" decoration-warning="state == 'in_consultation'"
+                  decoration-danger="state == 'cancel'">
+                <header>
+                    <button name="%(hospital2.cancel_appointment_wizard)d" string="Cancel Button"
+                            context="{'default_patient_id':'active_id'}"
+                            type="action" class="oe_highlight"/>
+
+                </header>
+                <field name="patient_id" decoration-bf="1"/>
+                <field name="appointment_time"/>
+                <field name="booking_date" decoration-it="1"/>
+                <field name="state"
+                       decoration-success="state == 'done'"
+                       decoration-warning="state == 'in_consultation'"
+                       decoration-danger="state == 'cancel'"
+                       widget="badge"/>
+                <groupby name="patient_id">
+                    <button name="actionclick_test" string="Click Me" type="object" class="oe_highlight"/>
+                </groupby>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_hospital_appointment_form" model="ir.ui.view">
+        <field name="name">hospital.appointment.form</field>
+        <field name="model">hospital.appointment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="%(hospital2.cancel_appointment_wizard)d" string="Cancel Button"
+                            context="{'default_patient_id':'active_id'}"
+                            type="action" class="oe_highlight"/>
+
+                    <field name="state" widget="statusbar" nolabel="1" options="{'clickable': '1'}"
+                           statusbar_visible="draft,in_consultation,done"/>
+                </header>
+                <sheet>
+                    <field name="priority" widget="priority"/>
+                    <group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="gender"/>
+                        </group>
+                        <group>
+                            <field name="ref"/>
+                            <field name="appointment_time"/>
+                            <field name="priority" string="Priority"/>
+                            <field name="booking_date"/>
+                            <button name="action_test" string="Object Button" type="object" class="oe_highlight"/>
+                            <button name="%(hospital2.action_hospital_patient)d" string="Action Button"
+                                    context="{'default_reason':'test', 'hide_appointment':1}"
+                                    confirm="Are You Sure" type="action" class="oe_highlight"/>
+
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Prescription" name="Prescription">
+                            <group>
+                                <field name="Prescription" palceholder="enter name"/>
+                            </group>
+                        </page>
+                        <page string="Pharmacy" name="Pharmacy">
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_appointment_search" model="ir.ui.view">
+        <field name="name">hospital.appointment.search</field>
+        <field name="model">hospital.appointment</field>
+        <field name="arch" type="xml">
+            <search>
+
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_hospital_appointment" model="ir.actions.act_window">
+        <field name="name">Appointment</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hospital.appointment</field>
+        <field name="view_mode">tree,form,calendar</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create first Appointment!
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_appointment"
+              name="Appointment"
+              action="action_hospital_appointment"
+              parent="menu_appointment_master"
+              sequence="10"/>
+
+</odoo>
